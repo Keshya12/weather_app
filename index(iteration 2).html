@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEATHER APP</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" class="input" placeholder="CITY" spellcheck="false">
+            <button class="button"><img src="images/search.png" alt="Search"></button>
+        </div>
+       
+        
+        
+        <div class="weather-container">
+            <div class="weather">
+                <img src="images/ether-animation.gif" class="weather-icon" alt="Weather Icon">
+                <h1 class="temp"></h1>
+                <h2 class="city"></h2>
+            </div>
+            <div class="welcome">
+            
+                <h1>Welcome to the Weather App</h1>
+                <p>Enter a city name to get the current weather information.</p>
+            </div>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png" alt="Humidity Icon">
+                    <div class="fade1">
+                        <p class="humidity"></p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png" alt="Wind Icon">
+                    <div class="fade2">
+                        <p class="wind"></p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const api_key = "94dc9385a4296f79b6727666901577b5";
+        const api_url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        const search_box = document.querySelector(".search input");
+        const search_btn = document.querySelector(".search button");
+        const weather_icon = document.querySelector(".weather-icon");
+
+        async function check_weather(city) {
+            try {
+                const response = await fetch(api_url + city + `&appid=${api_key}`);
+                if (!response.ok) {
+                    throw new Error("City not found");
+                }
+                const data = await response.json();
+                console.log(data);
+
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector(".wind").innerHTML = data.wind.speed + " km/hr";
+
+                switch (data.weather[0].main) {
+                    case "Clouds":
+                        weather_icon.src = "images/clouds.png";
+                        break;
+                    case "Clear":
+                        weather_icon.src = "images/clear.png";
+                        break;
+                    case "Rain":
+                        weather_icon.src = "images/rain.png";
+                        break;
+                    case "Drizzle":
+                        weather_icon.src = "images/drizzle.png";
+                        break;
+                    case "Mist":
+                        weather_icon.src = "images/mist.png";
+                        break;
+                    default:
+                        weather_icon.src = "images/snow.png";
+                }
+
+                // Hide welcome message and show weather details with animation
+                document.querySelector(".welcome").classList.add("fade-out");
+                setTimeout(() => {
+                    document.querySelector(".welcome").style.display = "none";
+                    document.querySelector(".weather-container").style.display = "block";
+                    document.querySelector(".weather-container").classList.add("fade-in");
+                }, 1000); // Match the duration of fade-out animation
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+                alert("City not found. Please try again.");
+            }
+        }
+
+        search_btn.addEventListener("click", () => {
+            const city = search_box.value.trim();
+            console.log("Searching for city:", city);
+            if (city) {
+                check_weather(city);
+            } else {
+                alert("Please enter a city name.");
+            }
+        });
+
+        // Optionally, you could call check_weather with a default city here.
+        // check_weather("London");
+    </script>
+</body>
+</html>
