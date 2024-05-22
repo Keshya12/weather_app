@@ -9,15 +9,46 @@ body{
     background-color: #000000;
 }
 
-.card{
-    width: 90%;
-    max-width: 470px;
-    background: linear-gradient(135deg, #00feba, #5b548a);
-    color: #fff;
-    margin: 100px auto 0;
-    border-radius: 20px;
-    padding: 40px 35px;
+.welcome img{
+    width:90px;
+
+}
+
+.clear-bg {
+    background-color: #021537; /* Light blue */
+    color: yellow;
+}
+
+.cloudy-bg {
+    background-color: #364646; /* Dark Slate Grey */
+}
+
+.rain-bg {
+    background-color:gray/* Steel blue */
+}
+
+.drizzle-bg {
+    background-color: #2596be; /* Pale turquoise */
+}
+
+.mist-bg {
+    background-color: #000000; /* White smoke */
+}
+
+.snow-bg {
+    background-color: #011d27; /* Light blue */
+}
+
+/* Additional CSS */
+.card {
+    transition: background-color 1s, opacity 1s;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    max-width: 400px;
+    margin: auto;
+    margin-top: -50px;
 }
 
 .search{
@@ -26,6 +57,11 @@ body{
     align-items: center;
     justify-content: space-between;
     border-radius: 30px;
+    transition: all 1s;
+}
+.search.adjusted {
+    
+    margin-top: -80px;
 }
 
 .search button{
@@ -36,6 +72,7 @@ body{
     border-radius: 50%;
     width: 60px;
     height: 60px;
+    margin-top: 141px;
 }
 
 .search img{
@@ -52,6 +89,7 @@ body{
     flex: 1;
     margin-right: 16px;
     font-size: 18px;
+    margin-top: 149px;
 }
 
 .weather-icon{
@@ -91,6 +129,27 @@ body{
 }
 
 .humidity,.wind{
-    font-size: 28px;
+    font-size: 17px;
     margin-top: -6px;
+}
+
+.weather-container {
+    opacity: 0;
+    transition: opacity 1s;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    padding: 20px;
+    color: white; /* Ensure text is visible on backgrounds */
+    display: none; /* Hidden by default */
+}
+
+/* Fade-out animation for welcome message */
+.fade-out {
+    opacity: 0;
+}
+
+/* Fade-in animation for weather details */
+.fade-in {
+    opacity: 1;
 }

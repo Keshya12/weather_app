@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEATHER APP</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" class="input" placeholder="CITY" spellcheck="false">
+            <button class="button"><img src="images/search.png" alt="Search"></button>
+        </div><br>
+        <div class="welcome">
+            
+           
+        </div>
+        <div class="weather-container" style="display: none;">
+            <div class="weather">
+               
+                <h1 class="temp">22°C</h1>
+                <h2 class="city">Brighton</h2>
+            </div>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png" alt="Humidity Icon">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png" alt="Wind Icon">
+                    <div>
+                        <p class="wind">15 km/hr</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const api_key = "94dc9385a4296f79b6727666901577b5";
+        const api_url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        const search_box = document.querySelector(".search input");
+        const search_btn = document.querySelector(".search button");
+        const weather_icon = document.querySelector(".weather-icon");
+        const weather_container = document.querySelector(".weather-container");
+        const card = document.querySelector(".card");
+        const search_container = document.querySelector(".search");
+        function speak(text) {
+            window.speechSynthesis.cancel(); // Stop any ongoing speech
+            const speech = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(speech);
+        }
+
+        async function check_weather(city) {
+            try {
+                const response = await fetch(api_url + city + `&appid=${api_key}`);
+                if (!response.ok) {
+                    throw new Error("City not found");
+                }
+                const data = await response.json();
+                console.log(data);
+
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector(".wind").innerHTML = data.wind.speed + " km/hr";
+
+                let weatherText = `The weather in ${data.name} is currently ${data.weather[0].description} with a temperature of ${Math.round(data.main.temp)} degrees Celsius. The humidity is ${data.main.humidity}% and the wind speed is ${data.wind.speed} kilometers per hour.`;
+                speak(weatherText);
+
+                switch (data.weather[0].main) {
+                    case "Clouds":
+                        weather_container.style.backgroundImage="url('images/cloudy.gif')";
+                        card.classList.add("cloudy-bg");
+                        break;
+                    case "Clear":
+                    weather_container.style.backgroundImage="url('images/cleary.gif')";
+                    card.classList.add("clear-bg");
+                        break;
+                    case "Rain":
+                    weather_container.style.backgroundImage="url('images/rainy.gif')";
+                    card.classList.add("rain-bg");
+                        break;
+                    case "Drizzle":
+                    weather_container.style.backgroundImage="url('images/drizzy.gif')";
+                    card.classList.add("drizzle-bg");
+                        break;
+                    case "Mist":
+                        weather_container.style.backgroundImage="url('images/misty.gif')";
+                        break;
+                    default:
+                        
+                        weather_container.style.backgroundImage = "url('images/snowback.gif')";
+                        
+                }
+
+                // Hide welcome message and show weather details with animation
+                document.querySelector(".welcome").classList.add("fade-out");
+                setTimeout(() => {
+                    document.querySelector(".welcome").style.display = "none";
+                    weather_container.style.display = "block";
+                    weather_container.classList.add("fade-in");
+                    details.style.display = "flex"; // Show the details section
+                    search_container.classList.add("adjusted"); // Adjust the search container
+                }, 1000);// Match the duration of fade-out animation
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+                alert("City not found. Please try again.");
+            }
+        }
+
+        function handleSearch() {
+            const city = search_box.value.trim();
+            console.log("Searching for city:", city);
+            if (city) {
+                check_weather(city);
+            } else {
+                alert("Please enter a city name.");
+            }
+        }
+
+        search_btn.addEventListener("click", handleSearch);
+
+        search_box.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                handleSearch();
+            }
+        });
+
+        // Optionally, you could call check_weather with a default city here.
+        // check_weather("London");
+    </script>
+</body>
+</html>
